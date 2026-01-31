@@ -4,7 +4,7 @@ import vectors.Vector;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main() {
         ThreadBasedSwerveDrivetrain swerveDrivetrain = new ThreadBasedSwerveDrivetrain(
                 () -> new Vector(1, 0, 1), () -> true, () -> 0.0, new Motor[] {
                         new Motor(Vector.WheelType.FRONT_LEFT), new Motor(Vector.WheelType.FRONT_RIGHT),
@@ -12,5 +12,6 @@ public class Main {
         }
         );
         swerveDrivetrain.drive();
+        /*This is insane.*/
     }
 }
