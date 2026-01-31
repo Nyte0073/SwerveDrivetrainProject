@@ -1,19 +1,19 @@
 package subsystems.driveables;
 
+import ftclibs.Motor;
 import vectors.Vector;
 
-import java.util.ArrayList;
 import java.util.EnumMap;
-import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
 public class ThreadBasedSwerveDrivetrain extends Swerve {
 
     private final EnumMap<Vector.WheelType, Double> wheelPositions = new EnumMap<>(Vector.WheelType.class);
+    private static boolean rotTransOrJustTrans = false;
 
-    public ThreadBasedSwerveDrivetrain(Supplier<Vector> vectorSupplier, Supplier<Boolean> robotProgramShouldContinue, Supplier<Double> originalPosSupplier) {
-        super(vectorSupplier, robotProgramShouldContinue, originalPosSupplier);
+    public ThreadBasedSwerveDrivetrain(Supplier<Vector> vectorSupplier, Supplier<Boolean> robotProgramShouldContinue, Supplier<Double> originalPosSupplier, Motor[] motors) {
+        super(vectorSupplier, robotProgramShouldContinue, originalPosSupplier, motors, () -> rotTransOrJustTrans);
 
         wheelPositions.put(Vector.WheelType.FRONT_LEFT, 0.0);
         wheelPositions.put(Vector.WheelType.FRONT_RIGHT, 0.0);
@@ -22,29 +22,37 @@ public class ThreadBasedSwerveDrivetrain extends Swerve {
     }
 
     @Override
-    public List<Vector> calculateSwerveWheelHeadings(Vector driverVector, boolean rotating, boolean clockwise, double originalPos) {
-        List<Vector> translatedAndOrRotatedVectors = new ArrayList<>();
+    public EnumMap<Vector.WheelType, Vector> calculateSwerveWheelHeadings(Vector driverVector, boolean rotating, boolean clockwise, double originalPos) {
+        EnumMap<Vector.WheelType, Vector> translatedAndOrRotatedVectors = new EnumMap<>(Vector.WheelType.class);
         if(rotating) {
             for(Vector.WheelType wheelType : Vector.WheelType.wheelTypes) {
                 Vector rotatedVector, translatedAndRotatedVector;
-                double x = driverVector.getX();
-                double y = driverVector.getY();
+                double x = wheelType.getVector().getX();
+                double y = wheelType.getVector().getY();
                 if(clockwise) {
                     rotatedVector = Vector.rotate90DegreesClockwise.apply(x, y);
                 } else {
                     rotatedVector = Vector.rotate90DegreesCounterClockwise.apply(x, y);
                 }
                 translatedAndRotatedVector = rotatedVector.plus(driverVector);
-                translatedAndOrRotatedVectors.add(translatedAndRotatedVector);
+                translatedAndOrRotatedVectors.put(wheelType, translatedAndRotatedVector);
+                rotTransOrJustTrans = true;
             }
         } else {
             double targetAngle = Math.toDegrees(Math.atan2(driverVector.getY(),
                     driverVector.getX())) - 90;
 
+            double magnitude = Math.hypot(driverVector.getX(), driverVector.getY()) / Math.sqrt(2);
+
             for(Map.Entry<Vector.WheelType, Double> entry : wheelPositions.entrySet()) {
                 double normalizedHeading = normalizeHeading(targetAngle, originalPos + entry.getValue());
                 double totalHeading = entry.getValue() + normalizedHeading;
-                double reversedHeading = reverseHeading(originalPos, totalHeading, targetAngle);
+                double reversedHeading = reverseHeading(entry.getValue(), totalHeading, targetAngle);
+                translatedAndOrRotatedVectors.put(entry.getKey(), new Vector(
+                        Math.cos(Math.toRadians(reversedHeading)), Math.sin(Math.toRadians(reversedHeading)), magnitude
+                ));
+                wheelPositions.put(entry.getKey(), reversedHeading);
+                rotTransOrJustTrans = false;
             }
 
         }

@@ -34,7 +34,7 @@ public final class Vector {
         }
     }
 
-    public Vector() {}
+    public Vector(){}
 
     public Vector(double x, double y) {
         setX(x);
@@ -74,7 +74,7 @@ public final class Vector {
     /*Calculates the magnitude by determining the
     * resultant factor using Pythagorean Theorem.*/
     public double getMagnitude() {
-        return Math.hypot(x, y);
+        return Math.hypot(x, y) / Math.sqrt(2);
     }
 
     public Vector plus(Vector vector) {
