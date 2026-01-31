@@ -1,16 +1,26 @@
 import ftclibs.Motor;
+import subsystems.Constants;
 import subsystems.driveables.ThreadBasedSwerveDrivetrain;
 import vectors.Vector;
 
-public class Main {
-
-    public static void main() {
-        ThreadBasedSwerveDrivetrain swerveDrivetrain = new ThreadBasedSwerveDrivetrain(
-                () -> new Vector(1, 0.5, 1), () -> true, () -> 0.0, new Motor[] {
-                        new Motor(Vector.WheelType.FRONT_LEFT), new Motor(Vector.WheelType.FRONT_RIGHT),
-                new Motor(Vector.WheelType.BACK_LEFT), new Motor(Vector.WheelType.BACK_RIGHT)
-        }
+     void main() {
+         Vector.Pos originalPose = new Vector.Pos();
+         Vector driverVector = new Vector();
+         Vector.ProgramShouldContinue programShouldContinue = new Vector.ProgramShouldContinue();
+         programShouldContinue.setShouldProgramContinue(false);
+         Motor[] motors = new Motor[] {
+                 new Motor(Constants.front_left),
+                 new Motor(Constants.front_right),
+                 new Motor(Constants.back_left),
+                 new Motor(Constants.back_right)
+         };
+         ThreadBasedSwerveDrivetrain drivetrain = new ThreadBasedSwerveDrivetrain(
+                () -> driverVector, () -> programShouldContinue, () -> originalPose, motors
         );
-        swerveDrivetrain.drive();
+        originalPose.setPos(0);
+        driverVector.setX(1);
+        driverVector.setY(1);
+        drivetrain.drive();
+        originalPose.setPos(100);
+        drivetrain.drive();
     }
-}

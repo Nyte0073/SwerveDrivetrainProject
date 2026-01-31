@@ -10,22 +10,20 @@ import java.util.function.Supplier;
 public class ThreadBasedSwerveDrivetrain extends Swerve {
 
     private final EnumMap<Vector.WheelType, Double> wheelPositions = new EnumMap<>(Vector.WheelType.class);
-    private static boolean rotTransOrJustTrans = false;
 
-    public ThreadBasedSwerveDrivetrain(Supplier<Vector> vectorSupplier, Supplier<Boolean> robotProgramShouldContinue, Supplier<Double> originalPosSupplier, Motor[] motors) {
-        super(vectorSupplier, robotProgramShouldContinue, originalPosSupplier, motors, () -> rotTransOrJustTrans);
+    public ThreadBasedSwerveDrivetrain(Supplier<Vector> vectorSupplier, Supplier<Vector.ProgramShouldContinue> robotProgramShouldContinue, Supplier<Vector.Pos> originalPosSupplier, Motor[] motors) {
+        super(vectorSupplier, robotProgramShouldContinue, originalPosSupplier, motors);
 
-        wheelPositions.put(Vector.WheelType.FRONT_LEFT, 180.0);
-        wheelPositions.put(Vector.WheelType.FRONT_RIGHT, 180.0);
-        wheelPositions.put(Vector.WheelType.BACK_LEFT, 180.0);
-        wheelPositions.put(Vector.WheelType.BACK_RIGHT, 180.0);
+        wheelPositions.put(Vector.WheelType.FRONT_LEFT, 0.0);
+        wheelPositions.put(Vector.WheelType.FRONT_RIGHT, 0.0);
+        wheelPositions.put(Vector.WheelType.BACK_LEFT, 0.0);
+        wheelPositions.put(Vector.WheelType.BACK_RIGHT, 0.0);
     }
 
     @Override
     public EnumMap<Vector.WheelType, Vector> calculateSwerveWheelHeadings(Vector driverVector, boolean rotating, boolean clockwise, double originalPos) {
         EnumMap<Vector.WheelType, Vector> translatedAndOrRotatedVectors = new EnumMap<>(Vector.WheelType.class);
         if(rotating) {
-            System.out.println("Rotating ran.");
             for(Vector.WheelType wheelType : Vector.WheelType.wheelTypes) {
                 Vector rotatedVector, translatedAndRotatedVector;
                 double x = wheelType.getVector().getX();
@@ -45,9 +43,6 @@ public class ThreadBasedSwerveDrivetrain extends Swerve {
                 translatedAndOrRotatedVectors.put(wheelType, new Vector(
                         Math.cos(Math.toRadians(reversedHeading)), Math.sin(Math.toRadians(reversedHeading)), driverVector.getMagnitude()
                 ));
-                rotTransOrJustTrans = true;
-
-                /*TODO needs work.*/
             }
         } else {
             if(Math.abs(driverVector.getY()) < 0.1 && Math.abs(driverVector.getX()) < 0.1) {
@@ -59,21 +54,19 @@ public class ThreadBasedSwerveDrivetrain extends Swerve {
             }
             double targetAngle = Math.toDegrees(Math.atan2(driverVector.getY(),
                     driverVector.getX())) - 90;
+
             System.out.println("targetAngle = " + targetAngle);
 
             for(Map.Entry<Vector.WheelType, Double> entry : wheelPositions.entrySet()) {
-                System.out.println("targetAngle = " + targetAngle);
                 System.out.println("(originalPos + entry.getValue()) = " + (originalPos + entry.getValue()));
                 double normalizedHeading = normalizeHeading(targetAngle, originalPos + entry.getValue());
                 double totalHeading = entry.getValue() + normalizedHeading;
                 System.out.println("totalHeading = " + totalHeading);
                 double reversedHeading = reverseHeading(entry.getValue(), totalHeading, normalizedHeading);
-                System.out.println("reversedHeading = " + reversedHeading);
                 translatedAndOrRotatedVectors.put(entry.getKey(), new Vector(
                         Math.cos(Math.toRadians(reversedHeading)), Math.sin(Math.toRadians(reversedHeading)), driverVector.getMagnitude()
                 ));
                 wheelPositions.put(entry.getKey(), reversedHeading);
-                rotTransOrJustTrans = false;
             }
 
         }
@@ -83,12 +76,12 @@ public class ThreadBasedSwerveDrivetrain extends Swerve {
 
     @Override
     public void stopThreads() {
-
+        System.out.println("Stopping threads...");
     }
 
     @Override
     public void stopMotors() {
-
+        System.out.println("Stopping motors...");
     }
 
     @Override

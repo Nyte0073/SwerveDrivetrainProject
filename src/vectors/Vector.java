@@ -110,4 +110,34 @@ public final class Vector {
         }
         return translatedAndRotatedVectors;
     }
+
+    public static final class Pos {
+        private double pos;
+
+        public Pos(double pos) {
+            setPos(pos);
+        }
+
+        public Pos() {}
+
+        public void setPos(double pos) {
+            this.pos = pos;
+        }
+
+        public double getPos() {
+            return pos;
+        }
+    }
+
+    public static class ProgramShouldContinue {
+        private boolean shouldProgramContinue;
+
+        public void setShouldProgramContinue(boolean shouldProgramContinue) {
+            this.shouldProgramContinue = shouldProgramContinue;
+        }
+
+        public boolean isShouldProgramContinue() {
+            return shouldProgramContinue;
+        }
+    }
 }

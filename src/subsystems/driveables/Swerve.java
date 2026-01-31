@@ -9,28 +9,28 @@ import java.util.function.Supplier;
 public abstract class Swerve implements Driveable {
 
     private final Supplier<Vector> vectorSupplier;
-    private final Supplier<Boolean> robotProgramShouldContinue, rotTransOrJustTrans;
-    private final Supplier<Double> originalPosSupplier;
+    private final Supplier<Vector.ProgramShouldContinue> robotProgramShouldContinue;
+    private final Supplier<Vector.Pos> originalPosSupplier;
     private final Motor[] motors;
 
-    public Swerve(Supplier<Vector> vectorSupplier, Supplier<Boolean> robotProgramShouldContinue, Supplier<Double> originalPosSupplier, Motor[] motors, Supplier<Boolean> rotTransOrJustTrans) {
+    public Swerve(Supplier<Vector> vectorSupplier, Supplier<Vector.ProgramShouldContinue> robotProgramShouldContinue, Supplier<Vector.Pos> originalPosSupplier, Motor[] motors) {
         this.vectorSupplier = vectorSupplier;
         this.robotProgramShouldContinue = robotProgramShouldContinue;
         this.originalPosSupplier = originalPosSupplier;
-        this.rotTransOrJustTrans = rotTransOrJustTrans;
         this.motors = motors;
     }
 
     @Override
     public void drive() {
         Vector driverVector = vectorSupplier.get();
-        boolean robotProgramCon = robotProgramShouldContinue.get();
+        boolean robotProgramCon = robotProgramShouldContinue.get().isShouldProgramContinue();
         double rotationPower = driverVector.getZ();
-        double originalPos = originalPosSupplier.get();
+        double originalPos = originalPosSupplier.get().getPos();
         EnumMap<Vector.WheelType, Vector> swerveWheelHeadings = new EnumMap<>(Vector.WheelType.class);
 
         if(!robotProgramCon) {
             stop();
+            return;
         } else if(rotationPower >= 0.05) {
             swerveWheelHeadings = calculateSwerveWheelHeadings(driverVector, true, true, originalPos);
         } else {
