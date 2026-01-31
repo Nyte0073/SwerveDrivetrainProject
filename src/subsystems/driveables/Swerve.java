@@ -39,18 +39,18 @@ public abstract class Swerve implements Driveable {
 
         swerveWheelHeadings.values().forEach(vector -> {
             System.out.println("Vector x: " + vector.getX() + ", Vector y: " + vector.getY() + "\n\n");
-            System.out.println("Vector Magnitude: " + vector.getMagnitude());
+            System.out.println("Vector Magnitude: " + vector.getZ());
         });
 
         for(Motor motor : motors) {
             Vector vector = swerveWheelHeadings.get(motor.getWheelType());
-            if(rotTransOrJustTrans.get()) {
-                System.out.println("Translated and rotated.");
-            } else {
-                double heading = Math.atan2(vector.getY(), vector.getX());
-                motor.setWheelHeading(heading);
+                double heading = Math.toDegrees(Math.atan2(vector.getY(), vector.getX()));
+                System.out.println("heading = " + heading);
+                if((vector.getX() + vector.getY() + vector.getZ()) != 0) {
+                    motor.setWheelHeading(heading);
+                }
+                System.out.println("motor.getWheelHeading() = " + motor.getWheelHeading());
                 motor.setMotorPower(vector.getZ());
-            }
         }
     }
 

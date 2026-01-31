@@ -3,7 +3,7 @@ package ftclibs;
 import vectors.Vector;
 
 public final class Motor {
-    private double motorPower, wheelHeading;
+    private double motorPower = 0, wheelHeading = 0;
     private Vector.WheelType wheelType;
 
     public Motor() {
