@@ -65,5 +65,4 @@ public abstract class Swerve implements Driveable {
     public abstract void stopMotors();
     public abstract double normalizeHeading(double targetPos, double currentPos);
     public abstract double reverseHeading(double originalPos, double totalPos, double targetPos);
-
 }
