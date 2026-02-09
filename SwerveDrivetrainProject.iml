@@ -7,5 +7,40 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/Downloads/lwjgl-release-3.4.1-custom/lwjgl-glfw-natives-macos-arm64.jar!/" />
+          <root url="jar://$USER_HOME$/Downloads/lwjgl-release-3.4.1-custom/lwjgl-glfw.jar!/" />
+          <root url="jar://$USER_HOME$/Downloads/lwjgl-release-3.4.1-custom/lwjgl-natives-macos-arm64.jar!/" />
+          <root url="jar://$USER_HOME$/Downloads/lwjgl-release-3.4.1-custom/lwjgl-opengl-natives-macos-arm64.jar!/" />
+          <root url="jar://$USER_HOME$/Downloads/lwjgl-release-3.4.1-custom/lwjgl-opengl.jar!/" />
+          <root url="jar://$USER_HOME$/Downloads/lwjgl-release-3.4.1-custom/lwjgl-opengles-natives-macos-arm64.jar!/" />
+          <root url="jar://$USER_HOME$/Downloads/lwjgl-release-3.4.1-custom/lwjgl-opengles.jar!/" />
+          <root url="jar://$USER_HOME$/Downloads/lwjgl-release-3.4.1-custom/lwjgl-unsafe.jar!/" />
+          <root url="jar://$USER_HOME$/Downloads/lwjgl-release-3.4.1-custom/lwjgl.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/Downloads/lwjgl-release-3.4.1-custom/lwjgl-glfw-sources.jar!/" />
+          <root url="jar://$USER_HOME$/Downloads/lwjgl-release-3.4.1-custom/lwjgl-opengl-sources.jar!/" />
+          <root url="jar://$USER_HOME$/Downloads/lwjgl-release-3.4.1-custom/lwjgl-opengles-sources.jar!/" />
+          <root url="jar://$USER_HOME$/Downloads/lwjgl-release-3.4.1-custom/lwjgl-sources.jar!/" />
+          <root url="jar://$USER_HOME$/Downloads/lwjgl-release-3.4.1-custom/lwjgl-unsafe-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/Downloads/lwjgl-release-3.4.1-custom-2/lwjgl-sdl-natives-macos-arm64.jar!/" />
+          <root url="jar://$USER_HOME$/Downloads/lwjgl-release-3.4.1-custom-2/lwjgl-sdl.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/Downloads/lwjgl-release-3.4.1-custom-2/lwjgl-sdl-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
   </component>
 </module>

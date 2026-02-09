@@ -1,17 +1,23 @@
 package vectors;
 
+import ftclibs.Motor;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.BiFunction;
 
 public final class Vector {
+
+    public static final Map<Motor, Vector> motorsToVectorPositions = new HashMap<>();
 
     /*X and Y coordinates representing the
     * slope of the vector.*/
     private double x, y, z;
 
     public static final BiFunction<Double, Double, Vector> rotate90DegreesClockwise = (x, y) -> new Vector(-y, x),
-    rotate90DegreesCounterClockwise = (x, y) -> new Vector(y, -x);
+    rotate90DegreesCounterclockwise = (x, y) -> new Vector(y, -x);
 
     public enum WheelType {
         FRONT_LEFT(new Vector(-1, 1)),
@@ -103,12 +109,17 @@ public final class Vector {
             if(clockwise) {
                 rotatedVector = rotate90DegreesClockwise.apply(x, y);
             } else {
-                rotatedVector = rotate90DegreesCounterClockwise.apply(x, y);
+                rotatedVector = rotate90DegreesCounterclockwise.apply(x, y);
             }
             rotatedAndTranslatedVector = rotatedVector.plus(this);
             translatedAndRotatedVectors.add(rotatedAndTranslatedVector);
         }
         return translatedAndRotatedVectors;
+    }
+
+    public Vector normalize() {
+        double magnitude = getMagnitude();
+        return new Vector(getX() / magnitude, getY() / magnitude);
     }
 
     public static final class Pos {

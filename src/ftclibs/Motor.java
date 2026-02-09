@@ -1,40 +1,31 @@
 package ftclibs;
 
-import vectors.Vector;
+public class Motor {
+    private double targetPosition = 0;
+    private double motorPower = 0;
 
-public final class Motor {
-    private double motorPower = 0, wheelHeading = 0;
-    private Vector.WheelType wheelType;
-
-    public Motor() {
-
+    public void setTargetPosition(double targetPosition) {
+        this.targetPosition = targetPosition;
     }
 
-    public Motor(Vector.WheelType wheelType) {
-        setWheelType(wheelType);
+    public double getCurrentPosition() {
+        return targetPosition;
     }
 
-    public void setMotorPower(double motorPower) {
+    public void set(double motorPower) {
         this.motorPower = motorPower;
-    }
-
-    public void setWheelHeading(double wheelHeading) {
-        this.wheelHeading = wheelHeading;
     }
 
     public double getMotorPower() {
         return motorPower;
     }
 
-    public double getWheelHeading() {
-        return wheelHeading;
-    }
+    public void stopAndResetEncoder() {}
 
-    public void setWheelType(Vector.WheelType wheelType) {
-        this.wheelType = wheelType;
-    }
+    public void setRunMode(RunMode runMode) {}
 
-    public Vector.WheelType getWheelType() {
-        return wheelType;
+    public enum RunMode {
+        RawPower,
+        PositionControl
     }
 }

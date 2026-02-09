@@ -1,52 +1,70 @@
-import GUI.Window;
+import GUI.Robot;
 import ftclibs.Motor;
 import subsystems.Constants;
-import subsystems.driveables.ThreadBasedSwerveDrivetrain;
+import subsystems.driveables.SwerveDrive;
 import vectors.Vector;
 
 import javax.swing.*;
+import java.awt.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.function.Supplier;
 
-void main() {
-         Vector.Pos originalPose = new Vector.Pos();
-         Vector driverVector = new Vector();
-         Vector.ProgramShouldContinue programShouldContinue = new Vector.ProgramShouldContinue();
-         programShouldContinue.setShouldProgramContinue(true);
-         Motor[] motors = new Motor[] {
-                 new Motor(Constants.front_left),
-                 new Motor(Constants.front_right),
-                 new Motor(Constants.back_left),
-                 new Motor(Constants.back_right)
-         };
-         ThreadBasedSwerveDrivetrain drivetrain = new ThreadBasedSwerveDrivetrain(
-                () -> driverVector, () -> programShouldContinue, () -> originalPose, motors
+public class Main {
+
+    static void main() {
+        Vector driverVector = new Vector();
+        Vector.Pos currentIMUOrientation = new Vector.Pos();
+        Supplier<Vector> driverVectorSupplier = () -> driverVector;
+        Supplier<Double> currentIMUOrientationSupplier = currentIMUOrientation::getPos;
+        SwerveDrive swerveDrive = new SwerveDrive(driverVectorSupplier, currentIMUOrientationSupplier);
+        List<Motor> turningMotors = List.of(
+              new Motor(), new Motor(), new Motor(), new Motor()
+        ), drivingMotors = List.of(
+               new Motor(), new Motor(), new Motor(), new Motor()
         );
-        originalPose.setPos(112);
-        driverVector.setX(-1);
+        Constants.initConstants(turningMotors, drivingMotors);
+        currentIMUOrientation.setPos(0);
+        driverVector.setX(1);
         driverVector.setY(-1);
-        driverVector.setZ(0);
-        drivetrain.drive();
 
-    JFrame frame = new JFrame();
-    frame.setSize(500, 500);
-    frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-    frame.add(new Window(-90));
-    frame.setVisible(true);
+        System.out.println("Target Angle: " + (Math.toDegrees(Math.atan2(driverVector.getY(), driverVector.getX())) - 90));
 
-    JFrame frame2 = new JFrame();
-    frame2.setSize(500, 500);
-    frame2.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-    frame2.add(new Window(0));
-    frame2.setVisible(true);
+        driverVector.setZ(1);
+        swerveDrive.drive();
 
-    JFrame frame3 = new JFrame();
-    frame3.setSize(500, 500);
-    frame3.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-    frame3.add(new Window(-90));
-    frame3.setVisible(true);
+        Constants.motorsAndTheirRotatedAndTranslatedVectors.values().forEach(vector ->
+                    System.out.println("Vector X: " + vector.getX() + ", Vector Y: " + vector.getY())
+        );
 
-    JFrame frame4 = new JFrame();
-    frame4.setSize(500, 500);
-    frame4.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-    frame4.add(new Window(-45));
-    frame4.setVisible(true);
+        System.out.println();
+
+        List<Double> swerveModAngles = new LinkedList<>();
+        for(Motor turningMotor : Constants.turningMotors) {
+            System.out.println("Turning motor heading: " + (turningMotor.getCurrentPosition() / 1440 * 360));
+            swerveModAngles.add(turningMotor.getCurrentPosition() / 1440 * 360);
+        }
+
+        System.out.println();
+
+        for(Motor motor : Constants.drivingMotors) {
+            System.out.println("Motor driving magnitude: " + motor.getMotorPower());
+        }
+
+            Robot robot = new Robot();
+            robot.setLayout(new GridLayout(2, 2, 10, 10));
+            robot.setFrontLeftSwerveWheelAngle(swerveModAngles.getFirst());
+            robot.setFrontRightSwerveWheelAngle(swerveModAngles.get(1));
+            robot.setBackLeftSwerveWheelAngle(swerveModAngles.get(2));
+            robot.setBackRightSwerveWheelAngle(swerveModAngles.get(3));
+
+            JFrame frame = new JFrame("Swerve Robot Visualizer");
+            frame.setSize(new Dimension(1000, 1000));
+            frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+            frame.getContentPane().add(robot);
+            frame.setVisible(true);
+
+
     }
+}
+

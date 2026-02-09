@@ -1,10 +1,37 @@
 package subsystems;
 
+import ftclibs.Motor;
 import vectors.Vector;
 
-public final class Constants {
-    public static final Vector.WheelType front_left = Vector.WheelType.FRONT_LEFT,
-            front_right = Vector.WheelType.FRONT_RIGHT,
-            back_left = Vector.WheelType.BACK_LEFT,
-            back_right = Vector.WheelType.BACK_RIGHT;
+import java.util.*;
+
+public class Constants {
+    public static final List<Motor> drivingMotors = new ArrayList<>(), turningMotors = new LinkedList<>();
+    public static final Map<Motor, Vector> motorsAndTheirRotatedAndTranslatedVectors = new HashMap<>();
+    public static final Map<Motor, Motor> turningDrivingMotorsMap = new HashMap<>();
+    public static final String frontLeftDrivingMotorID = "frontLeftDriving", frontRightDrivingMotorID = "frontRightDriving",
+            backLeftDrivingMotorID = "backLeftDriving", backRightDrivingMotorID = "backRightDriving", frontLeftRotatingMotorID = "frontLeftRotating",
+            frontRightRotatingMotorID = "frontRightRotating", backLeftRotatingMotorID = "backLeftRotating", backRightRotatingMotorID = "backRightRotating";
+
+    public static void initConstants(List<Motor> drivingMotors, List<Motor> turningMotors) {
+        Constants.drivingMotors.addAll(drivingMotors);
+        Constants.turningMotors.addAll(turningMotors);
+        for(Motor motor : drivingMotors) {
+            motor.stopAndResetEncoder();
+            motor.setRunMode(Motor.RunMode.RawPower);
+        }
+        for(Motor motor : turningMotors) {
+            motor.stopAndResetEncoder();
+            motor.setRunMode(Motor.RunMode.PositionControl);
+        }
+        turningDrivingMotorsMap.put(turningMotors.get(0), drivingMotors.get(0));
+        turningDrivingMotorsMap.put(turningMotors.get(1), drivingMotors.get(1));
+        turningDrivingMotorsMap.put(turningMotors.get(2), drivingMotors.get(2));
+        turningDrivingMotorsMap.put(turningMotors.get(3), drivingMotors.get(3));
+
+        Vector.motorsToVectorPositions.put(turningMotors.get(0), new Vector(-1, 1));
+        Vector.motorsToVectorPositions.put(turningMotors.get(1), new Vector(1, 1));
+        Vector.motorsToVectorPositions.put(turningMotors.get(2), new Vector(-1, -1));
+        Vector.motorsToVectorPositions.put(turningMotors.get(3), new Vector(1, -1));
+    }
 }
